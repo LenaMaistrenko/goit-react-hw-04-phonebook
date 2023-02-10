@@ -14,7 +14,7 @@ export class App extends Component {
     event.preventDefault();
     const name = event.target.name.value;
     const number = event.target.number.value;
-    console.log(name, number);
+
     const repitName = this.state.contacts.find(item => {
       return item.name === name;
     });
@@ -51,7 +51,6 @@ export class App extends Component {
   handleChange = event => {
     const { name, value } = event.target;
     this.setState({ [name]: value });
-    console.log(this.state);
   };
 
   render() {
