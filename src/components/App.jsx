@@ -1,40 +1,38 @@
-import React from 'react';
-import { Component } from 'react';
 import { nanoid } from 'nanoid';
-import { ContactForm } from './ContactForm/ContactForm';
 import { ContactList } from './ContactList/ContactList';
 import { Filter } from './Filter/Filter';
+import { ContactForm } from './ContactForm/ContactForm';
+import css from './App.module.css';
+import { Component } from 'react';
 
 export class App extends Component {
   state = {
-    contacts: [],
+    contacts: [
+      { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
+      { id: 'id-2', name: 'Hermione Kline', number: '443-89-12' },
+      { id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
+      { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
+    ],
     filter: '',
   };
-  formSubmit = event => {
-    event.preventDefault();
-    const name = event.target.name.value;
-    const number = event.target.number.value;
 
-    const repitName = this.state.contacts.find(item => {
-      return item.name === name;
+  sendContact = contact => {
+    const { name } = this.state;
+    const repeatName = this.state.contacts.find(({ name }) => {
+      return contact.name === name;
     });
-    if (repitName) {
-      alert(`${name} is already in your contacts`);
-
-      this.reset();
+    if (repeatName) {
+      alert(`${name} is already in your contacts!`);
       return;
     } else {
-      const newContact = { id: nanoid(), name, number };
-      this.setState({
-        contacts: [newContact, ...this.state.contacts],
+      this.setState(prevState => {
+        return {
+          contacts: [...prevState.contacts, { ...contact, id: nanoid() }],
+        };
       });
     }
+  };
 
-    this.reset();
-  };
-  reset = () => {
-    this.setState({ name: '', number: '' });
-  };
   onBtnDelete = e => {
     this.setState(prevState => {
       return {
@@ -44,36 +42,29 @@ export class App extends Component {
       };
     });
   };
-  handleFilterChange = e => {
+
+  handleFilter = e => {
     const { value } = e.target;
     this.setState({ filter: value });
   };
-  handleChange = event => {
-    const { name, value } = event.target;
-    this.setState({ [name]: value });
-  };
 
   render() {
-    // const { contacts } = this.state;
-    const filterContacts = this.state.contacts.filter(contact =>
+    const { contacts } = this.state;
+    const filterContact = contacts.filter(contact =>
       contact.name
         .toLowerCase()
         .trim()
         .includes(this.state.filter.toLowerCase())
     );
+
     return (
-      <>
-        <h1>PHONEBOOK</h1>
-        <ContactForm
-          handleChange={this.handleChange}
-          formSubmit={this.formSubmit}
-          name={this.state.name}
-          number={this.state.number}
-        />
-        <h2>Contacts</h2>
-        <Filter onChange={this.handleFilterChange} value={this.state.filter} />
-        <ContactList contacts={filterContacts} onBtnDelete={this.onBtnDelete} />
-      </>
+      <div>
+        <h1 className={css.apptitle}>Phonebook</h1>
+        <ContactForm onSubmit={this.sendContact} />
+        <h2 className={css.apptitle}>Contacts</h2>
+        <Filter onChange={this.handleFilter} value={this.state.filter} />
+        <ContactList contacts={filterContact} onBtnDelete={this.onBtnDelete} />
+      </div>
     );
   }
 }
