@@ -17,7 +17,7 @@ export function ContactForm(props) {
 
         break;
       default:
-        alert('Нет таких значений');
+        alert('No values');
     }
   };
 
